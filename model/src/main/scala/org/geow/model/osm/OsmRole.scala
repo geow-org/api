@@ -1,0 +1,6 @@
+package org.geow.model.osm
+
+sealed trait OsmRole
+case object OsmRoleInner extends OsmRole
+case object OsmRoleOuter extends OsmRole
+case object OsmRoleEmpty extends OsmRole
