@@ -1,4 +1,4 @@
-package org.geow.model.osm
+package org.geow.model
 
 case class OsmProperties(
 	osmId : Long,

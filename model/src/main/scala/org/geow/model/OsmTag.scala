@@ -1,3 +1,3 @@
-package org.geow.model.osm
+package org.geow.model
 
 case class OsmTag(key : String, value : String)

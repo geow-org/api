@@ -1,9 +1,10 @@
-package org.geow.model.osm.serializer
+package org.geow.model.serializer
 
 
 import scala.pickling._
 import binary._
-import org.geow.model.osm._
+import org.geow.model._
+import org.geow.model.geometry._
 
 
 object OsmSerializer {

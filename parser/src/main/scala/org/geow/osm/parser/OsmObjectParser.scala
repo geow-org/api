@@ -3,7 +3,7 @@ package org.geow.osm.parser
 import scala.xml._
 import scala.xml.pull._
 import scala.io.Source
-import org.geow.model.osm._
+import org.geow.model._
 import org.joda.time.DateTimeZone
 import org.joda.time.format.ISODateTimeFormat
 import scala.util.Try

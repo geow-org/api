@@ -1,4 +1,4 @@
-package org.geow.model.osm
+package org.geow.model
 
 sealed trait OsmRole
 case object OsmRoleInner extends OsmRole
