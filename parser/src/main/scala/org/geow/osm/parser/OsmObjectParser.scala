@@ -25,25 +25,20 @@ class OsmObjectParser(source: Source) {
     while (reader.hasNext && result == None) {
       reader.next match {
         case EvElemStart(_, "relation", attr, _) =>
-          print("start relation\n")
           val props = parseProperties(attr)
-          print(props)
         case elem @ EvElemStart(_, "member", attr, _) =>
           val member = parseMember(attr)
-          print(member)
         case elem @ EvElemStart(_, "tag", attr, _) =>
           val tag = parseTag(attr)
-          print(tag)
         case EvElemStart(_, elem, _, _) => {
-          print(s"start elem $elem\n")
           currentNode = elem
         }
         case EvText(text) => {
           currentNode match {
-            case s => print(s"text$s")
+            case s => 
           }
         }
-        case EvElemEnd(_, "relation") => println("end relation")
+        case EvElemEnd(_, "relation") => 
         case EvElemEnd(_, _) => currentNode = ""
         case _ =>
       }

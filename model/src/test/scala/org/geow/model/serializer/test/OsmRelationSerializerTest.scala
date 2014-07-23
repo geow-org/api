@@ -25,7 +25,7 @@ import org.geow.model.geometry._
 import org.geow.model.serializer.OsmSerializer._
 
 @RunWith(classOf[JUnitRunner])
-class OsmSerializerTest extends Specification with ScalaCheck {
+class OsmRelationSerializerTest extends Specification with ScalaCheck {
 
   sequential
   val tags = for {
@@ -85,20 +85,6 @@ class OsmSerializerTest extends Specification with ScalaCheck {
   
   "The OsmSerializer" should {
 
-    "serialize and deserialize an OsmNode object" ! check({ osmNode: OsmNode =>
-      {
-        val serialized = toBinary(osmNode)
-        val deserialized = fromBinary(serialized)
-        deserialized must be_==(osmNode)
-      }
-    })
-    "serialize and deserialize an OsmWay object" ! check({ osmWay: OsmWay =>
-      {
-        val serialized = toBinary(osmWay)
-        val deserialized = fromBinary(serialized)
-        deserialized must be_==(osmWay)
-      }
-    })
     "serialize and deserialize an OsmRelation object" ! check({ osmRelation: OsmRelation =>
       {
         val serialized = toBinary(osmRelation)
