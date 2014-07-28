@@ -7,13 +7,17 @@ import org.geow.model._
 import org.joda.time.DateTimeZone
 import org.joda.time.format.ISODateTimeFormat
 import scala.util.Try
+import scala.collection.mutable.ListBuffer
+import scala.util.Success
+import scala.util.Failure
+import org.geow.model.geometry.OsmPoint
+import org.geow.geohash.GeoHashUtils
 
 class OsmObjectParser(source: Source) {
 
   import org.geow.osm.parser.OsmObjectParser._
 
   val reader = new XMLEventReader(source)
-  //val reader = new XMLEventReader(io.Source.fromFile("movies.xml")("UTF-8"))
 
   def hasNext() = reader.hasNext
 
@@ -22,28 +26,73 @@ class OsmObjectParser(source: Source) {
     var currentNode = ""
     var result: Option[OsmObject] = None
 
+    var props: Option[OsmProperties] = None
+    var tagList = ListBuffer[OsmTag]()
+
+    var memberList = ListBuffer[OsmMember]()
+
+    var ndList = ListBuffer[Long]()
+
+    var point : Option[OsmPoint] = None
+    
+    def resetElements = {
+      result = None
+      tagList.clear
+      memberList.clear
+      ndList.clear
+    }
+
     while (reader.hasNext && result == None) {
       reader.next match {
-        case EvElemStart(_, "relation", attr, _) =>
-          val props = parseProperties(attr)
-        case elem @ EvElemStart(_, "member", attr, _) =>
-          val member = parseMember(attr)
-        case elem @ EvElemStart(_, "tag", attr, _) =>
-          val tag = parseTag(attr)
+        case EvElemStart(_, "node", attr, _) => {
+          resetElements
+          props = Some(parseProperties(attr))
+          point = Some(parsePoint(attr))
+        }
+        case EvElemStart(_, "way", attr, _) => {
+          resetElements
+          props = Some(parseProperties(attr))
+        }
+        case EvElemStart(_, "relation", attr, _) => {
+          resetElements
+          props = Some(parseProperties(attr))
+        }
+        case elem @ EvElemStart(_, "nd", attr, _) => {
+          ndList += parseNd(attr)
+        }
+        case elem @ EvElemStart(_, "member", attr, _) => {
+          memberList += parseMember(attr)
+        }
+        case elem @ EvElemStart(_, "tag", attr, _) => {
+          tagList += parseTag(attr)
+        }
         case EvElemStart(_, elem, _, _) => {
           currentNode = elem
         }
         case EvText(text) => {
           currentNode match {
-            case s => 
+            case s =>
           }
         }
-        case EvElemEnd(_, "relation") => 
+        case EvElemEnd(_, "way") => {
+          props.map(p => {
+            result = Some(OsmWay(p, tagList.toList, ndList.toList))
+          })
+        }
+        case EvElemEnd(_, "relation") => {
+          props.map(p => {
+            result = Some(OsmRelation(p, tagList.toList, memberList.toList))
+          })
+        }
         case EvElemEnd(_, _) => currentNode = ""
         case _ =>
       }
     }
     result
+  }
+
+  def parseNd(attr: MetaData): Long = {
+    attr("ref").text.toLong
   }
 
   def parseMember(attr: MetaData): OsmMember = {
@@ -52,13 +101,13 @@ class OsmObjectParser(source: Source) {
       case "way" => OsmTypeWay
       case _ => OsmTypeNode
     }
-    val ref = attr("ref").text.toInt
+    val ref = attr("ref").text.toLong
     val role = attr("role").text match {
       case "inner" => OsmRoleInner
       case "outer" => OsmRoleOuter
       case _ => OsmRoleEmpty
     }
-    OsmMember(ref, role, `type`)
+    OsmMember(`type`, ref, role)
   }
 
   def parseTag(attr: MetaData): OsmTag = OsmTag(attr("k").text, attr("v").text)
@@ -84,15 +133,29 @@ class OsmObjectParser(source: Source) {
       version,
       changeset)
   }
+  
+  def parsePoint(attr: MetaData): OsmPoint = {    
+    val lat = attr("lat").text.toLong
+    val lon = attr("lon").text.toLong
+    OsmPoint(lon,lat)
+  }
 }
 
 object OsmObjectParser {
 
-  val XML_DATE_INPUT_FORMAT = ISODateTimeFormat.dateTime()
-  val XML_DATE_OUTPUT_FORMAT = ISODateTimeFormat.dateTime().withZone(DateTimeZone.UTC)
+  val XML_DATE_INPUT_FORMAT = ISODateTimeFormat.dateTimeNoMillis()
+  val XML_DATE_OUTPUT_FORMAT = ISODateTimeFormat.dateTime()
 
   def convertXmlDateToLong(xmlTime: String): Long = {
-    val millis = Try(XML_DATE_INPUT_FORMAT.parseDateTime(xmlTime).getMillis).getOrElse(System.currentTimeMillis)
+    
+    val parseIntent = Try(XML_DATE_INPUT_FORMAT.parseDateTime(xmlTime))
+    val millis = parseIntent match {
+      case Success(dateTime) => dateTime.getMillis
+      case Failure(e) => {
+        print(e)
+        System.currentTimeMillis
+      }
+    }
     millis
   }
 }

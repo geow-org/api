@@ -31,7 +31,7 @@ lazy val model = project.dependsOn(geohash)
 		)
 	)
 
-lazy val parser = project.dependsOn(model)
+lazy val parser = project.dependsOn(model, geohash)
 	.settings(
 		organization := "org.geow",
 		name := """parser""",

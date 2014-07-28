@@ -1,3 +1,3 @@
 package org.geow.model
 
-case class OsmMember(id : Long, role : OsmRole, `type` : OsmType)
+case class OsmMember(`type` : OsmType, id : Long, role : OsmRole)
