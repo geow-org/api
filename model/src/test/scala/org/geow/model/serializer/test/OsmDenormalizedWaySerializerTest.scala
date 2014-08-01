@@ -25,7 +25,7 @@ import org.geow.model.geometry._
 import org.geow.model.serializer.OsmDenormalizedSerializer._
 
 @RunWith(classOf[JUnitRunner])
-class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
+class OsmDenormalizedWaySerializerTest extends Specification with ScalaCheck {
 
   sequential
   
@@ -114,7 +114,7 @@ class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
   val osmDenormalizedRelations = for {
     pr <- arbitrary[OsmProperties](propertiesArb)
     t <- Gen.containerOf[List, OsmTag](tags)
-    gm <- Gen.listOfN(5, geometryMember)
+    gm <- Gen.containerOf[List, GeometryMember](geometryMember)
   } yield OsmDenormalizedRelation(pr, t, gm)
 
   implicit def osmDenormalizedNodesArb = Arbitrary { osmDenormalizedNodes }
@@ -123,25 +123,11 @@ class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
 
   "The OsmDenormalizedSerializer" should {
 
-    "serialize and deserialize an OsmDenormalizedNode object" ! check({ osmDenormalizedNode: OsmDenormalizedNode =>
-      {
-        val serialized = toBinary(osmDenormalizedNode)
-        val deserialized = fromBinary(serialized)
-        deserialized must be_==(osmDenormalizedNode)
-      }
-    })
     "serialize and deserialize an OsmDenormalizedWay object" ! check({ osmDenormalizedWay: OsmDenormalizedWay =>
       {
         val serialized = toBinary(osmDenormalizedWay)
         val deserialized = fromBinary(serialized)
         deserialized must be_==(osmDenormalizedWay)
-      }
-    })
-    "serialize and deserialize an OsmDenormalizedRelation object" ! check({ osmDenormalizedRelation: OsmDenormalizedRelation =>
-      {
-        val serialized = toBinary(osmDenormalizedRelation)
-        val deserialized = fromBinary(serialized)
-        deserialized must be_==(osmDenormalizedRelation)
       }
     })
   }
