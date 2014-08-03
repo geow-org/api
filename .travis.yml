@@ -1,0 +1,6 @@
+language: scala
+scala:
+   - 2.11.2
+notifications:
+  email:
+    - github@geow.org
