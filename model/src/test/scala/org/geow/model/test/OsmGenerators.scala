@@ -29,9 +29,11 @@ object OsmGenerators {
   implicit def propertiesArb = Arbitrary { properties }
 
   val points = for {
-    lon <- arbitrary[Double] suchThat (lon => lon >= -180 && lon <= 180)
-    lat <- arbitrary[Double] suchThat (lat => lat >= -90 && lat <= 90)
-  } yield OsmPoint(lon, lat)
+    lon <- arbitrary[Double] 
+    lonNormalized = lon % 180
+    lat <- arbitrary[Double] 
+    latNormalized = lat % 90
+  } yield OsmPoint(lonNormalized, latNormalized)
 
   implicit def pointsArb = Arbitrary { points }
 

@@ -17,7 +17,7 @@ lazy val geohash = project
 		scalaVersion := "2.11.2"
 	)
 
-lazy val model = project.dependsOn(geohash)
+lazy val model = project
 	.settings(
 		organization := "org.geow",
 		name := """model""",
