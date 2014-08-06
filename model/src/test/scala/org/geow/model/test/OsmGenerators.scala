@@ -86,11 +86,11 @@ object OsmGenerators {
   implicit def geoArb: Gen[OsmGeometry] = Gen.oneOf(geometryNode, geometryWay) 
 
   val geometryMember = for {
-    o <- arbitrary[Long]
-    r <- Gen.oneOf(OsmRoleInner, OsmRoleOuter, OsmRoleEmpty)
     t <- Gen.oneOf(OsmTypeNode, OsmTypeWay, OsmTypeRelation)
+    i <- arbitrary[Long]
+    r <- Gen.oneOf(OsmRoleInner, OsmRoleOuter, OsmRoleEmpty)
     g <- geoArb
-  } yield OsmGeometryMember(o, r, t, g)
+  } yield OsmGeometryMember(t, i, r, g)
 
   implicit def geoMemberArb = Arbitrary { geometryMember }
 
