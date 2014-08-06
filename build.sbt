@@ -22,6 +22,7 @@ lazy val model = project
 		organization := "org.geow",
 		name := """model""",
 		scalaVersion := "2.11.2",
+		scalacOptions ++= Seq("-deprecation"),
 		resolvers += Resolver.sonatypeRepo("snapshots"),
     	libraryDependencies ++= Seq(
 			"org.scala-lang" %% "scala-pickling" % "0.9.0-SNAPSHOT",

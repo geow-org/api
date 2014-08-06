@@ -1,6 +1,6 @@
 package org.geow.model
 
-import org.geow.model.geometry._
+import org.geow.model.geometry.OsmPoint
 
 sealed trait OsmObject
 case class OsmNode(properties: OsmProperties, tags: List[OsmTag], point : OsmPoint) extends OsmObject
