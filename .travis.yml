@@ -1,6 +1,12 @@
 language: scala
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION clean test
 scala:
    - 2.11.2
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
 notifications:
   email:
     - github@geow.org
