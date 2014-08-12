@@ -48,7 +48,7 @@ object OsmGenerators {
 
    val osmNodes = for {
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List,OsmTag](tags)
+    t <- Gen.listOfN(5, tags)
     po <- arbitrary[OsmPoint](pointsArb)
   } yield OsmNode(pr, t, po)
 
@@ -56,16 +56,16 @@ object OsmGenerators {
   
   val osmWays = for {    
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List,OsmTag](tags)
-    nds <- Gen.containerOf[List,Long](arbitrary[Long])
+    t <- Gen.listOfN(5, tags)
+    nds <- Gen.listOfN(50,arbitrary[Long])
   } yield OsmWay(pr, t, nds)
   
   implicit def osmWaysArb = Arbitrary { osmWays }
   
   val osmRelations = for {    
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List,OsmTag](tags)
-    mems <- Gen.containerOf[List,OsmMember](members)
+    t <- Gen.listOfN(5, tags)
+    mems <- Gen.listOfN(30, members)
   } yield OsmRelation(pr, t, mems)
   
   implicit def osmRelationsArb = Arbitrary { osmRelations }
@@ -77,7 +77,7 @@ object OsmGenerators {
   implicit def geoNodeArb = Arbitrary { geometryNode }
 
   val geometryWay = for {
-    l <- Gen.containerOf[List, OsmPoint](points)
+    l <- Gen.listOfN(50, points)
     w = OsmLinestring(l)
   } yield OsmGeometryWay(w)
 
@@ -95,12 +95,12 @@ object OsmGenerators {
   implicit def geoMemberArb = Arbitrary { geometryMember }
 
   val geometryRelation = for {
-    r <- Gen.containerOf[List, OsmGeometryMember](geometryMember)
+    r <- Gen.listOfN(20,geometryMember)
   } yield OsmGeometryRelation(r)
 
   val osmDenormalizedNodes = for {
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List, OsmTag](tags)
+    t <- Gen.listOfN(5, tags)
     gn <- arbitrary[OsmGeometryNode](geoNodeArb)
   } yield OsmDenormalizedNode(pr, t, gn)
 
@@ -108,18 +108,18 @@ object OsmGenerators {
 
   val osmDenormalizedWays = for {
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List, OsmTag](tags)
-    pointList <- Gen.containerOf[List, OsmPoint](points)
+    t <- Gen.listOfN(5, tags)
+    pointList <- Gen.listOfN(50,points)
     linestring = OsmLinestring(pointList)
     gw = OsmGeometryWay(linestring)
   } yield OsmDenormalizedWay(pr, t, gw)
 
   implicit def osmDenormalizedWaysArb = Arbitrary { osmDenormalizedWays }
-  
+    
   val osmDenormalizedRelations = for {
     pr <- arbitrary[OsmProperties](propertiesArb)
-    t <- Gen.containerOf[List, OsmTag](tags)
-    gm <- Gen.containerOf[List, OsmGeometryMember](geometryMember)
+    t <- Gen.listOfN(5, tags)
+    gm <- Gen.listOfN(5,geometryMember)
   } yield OsmDenormalizedRelation(pr, t, gm)
 
   implicit def osmDenormalizedRelationsArb = Arbitrary { osmDenormalizedRelations }
