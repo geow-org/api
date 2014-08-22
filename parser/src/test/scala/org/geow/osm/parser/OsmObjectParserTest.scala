@@ -76,8 +76,6 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
       </relation>
     </osm>
 
-  val nodePoint = OsmPoint(6.7797524, 51.2378913)
-
   val nodeProps = OsmProperties(2465725143L, "black_bike", 18130L,
     convertXmlDateToLong("2014-04-16T19:23:01Z"), true, 2,
     21736329)
@@ -93,35 +91,13 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
     OsmTag("name", "Himmel und Ähd"),
     OsmTag("phone", "+49 211 4981361"),
     OsmTag("website", "http://www.himmel-aehd.de"))
-    
-    val node = OsmNode(nodeProps, nodeTags, nodePoint)
 
-  val relationMembers = List(
-    OsmMember(OsmTypeWay, 245181859L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 245181864L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011174L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011181L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011176L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 31916345L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011190L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011189L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011184L, OsmRoleOuter))
+  val nodePoint = OsmPoint(6.7797524, 51.2378913)
 
-  val relationProps = OsmProperties(91062L, "Gehrke", 14002L, convertXmlDateToLong("2013-11-08T12:20:08Z"), true, 11,
-    18781052)
-
-  val relationTags = List(
-    OsmTag("admin_level", "10"),
-    OsmTag("boundary", "administrative"),
-    OsmTag("name", "Golzheim"),
-    OsmTag("type", "boundary"),
-    OsmTag("wikipedia", "de:Golzheim_(Düsseldorf)"))
-
-  val relation = OsmRelation(relationProps, relationTags, relationMembers)
+  val node = OsmNode(nodeProps, nodeTags, nodePoint)
 
   val wayProps = OsmProperties(143653722L, "teufli", 247886L, convertXmlDateToLong("2014-01-14T00:57:49Z"), true, 5,
     19982704)
-  val wayNds = List(203790573L, 717638289L, 73664701L, 827539061L, 717638282L, 827538924L, 73664703L, 717638284L, 717638278L)
 
   val wayTags = List(
     OsmTag("highway", "trunk"),
@@ -135,7 +111,32 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
     OsmTag("name", "Rheinalleetunnel"),
     OsmTag("oneway", "yes"))
 
+  val wayNds = List(203790573L, 717638289L, 73664701L, 827539061L, 717638282L, 827538924L, 73664703L, 717638284L, 717638278L)
+
   val way = OsmWay(wayProps, wayTags, wayNds)
+
+  val relationProps = OsmProperties(91062L, "Gehrke", 14002L, convertXmlDateToLong("2013-11-08T12:20:08Z"), true, 11,
+    18781052)
+
+  val relationTags = List(
+    OsmTag("admin_level", "10"),
+    OsmTag("boundary", "administrative"),
+    OsmTag("name", "Golzheim"),
+    OsmTag("type", "boundary"),
+    OsmTag("wikipedia", "de:Golzheim_(Düsseldorf)"))
+
+  val relationMembers = List(
+    OsmMember(OsmTypeWay, 245181859L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 245181864L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011174L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011181L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011176L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 31916345L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011190L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011189L, OsmRoleOuter),
+    OsmMember(OsmTypeWay, 32011184L, OsmRoleOuter))
+
+  val relation = OsmRelation(relationProps, relationTags, relationMembers)
 
   val parser = new OsmObjectParser(Source.fromString(xml.toString))
 
