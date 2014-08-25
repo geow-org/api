@@ -46,8 +46,7 @@ sbt publishLocal
   val parser = new OsmObjectParser(source)
   
   // pull openstreetmap data
-  while (parser.hasNext)
-    println(parser.next())
+  for (elem <- parser) println(elem)
 
 ```
 
