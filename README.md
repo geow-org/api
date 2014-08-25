@@ -8,6 +8,7 @@ Geow is a lightweight API for processing [OpenStreetMap](http://wiki.openstreetm
 * Parsing of Osm files (currently xml is supported)
 * Binary roundtrip serialization
 * Support for geometric denormalization (i.e. Osm objects contain the full geometry)
+* Efficient and flexible geo-hashing utilities
 
 **Planned:**
 * Pbf support
