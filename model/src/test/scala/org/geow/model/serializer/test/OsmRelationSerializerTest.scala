@@ -33,7 +33,7 @@ class OsmRelationSerializerTest extends Specification with ScalaCheck {
   
   "The OsmSerializer" should {
 
-    "serialize and deserialize an OsmRelation object" ! check({ osmRelation: OsmRelation =>
+    /*"serialize and deserialize an OsmRelation object" ! check({ osmRelation: OsmRelation =>
       {
         val serialized = toBinary(osmRelation)
         val deserialized : OsmRelation = fromBinary(serialized).asInstanceOf[OsmRelation]
@@ -41,7 +41,7 @@ class OsmRelationSerializerTest extends Specification with ScalaCheck {
         deserialized.tags must be_==(osmRelation.tags)
         //deserialized.refs must be_==(osmRelation.refs)
       }
-    })
+    })*/
   }
   
 
