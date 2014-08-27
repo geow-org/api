@@ -11,16 +11,17 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Success
 import scala.util.Failure
 import org.geow.model.geometry.OsmPoint
+import org.geow.model.geometry.OsmPoint
 
-class OsmObjectParser(source: Source) {
+class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
 
   import org.geow.osm.parser.OsmObjectParser._
 
   val reader = new XMLEventReader(source)
 
-  def hasNext() = reader.hasNext
+  override def hasNext() = reader.hasNext
 
-  def next(): Option[OsmObject] = {
+  override def next(): Option[OsmObject] = {
 
     var result: Option[OsmObject] = None
 
@@ -29,7 +30,7 @@ class OsmObjectParser(source: Source) {
 
     var memberList = ListBuffer[OsmMember]()
 
-    var ndList = ListBuffer[Long]()
+    var ndList = ListBuffer[OsmId]()
 
     var pointOption: Option[OsmPoint] = None
 
@@ -92,7 +93,7 @@ class OsmObjectParser(source: Source) {
     result
   }
 
-  def parseNd(attr: MetaData): Try[Long] = Try(attr("ref").text.toLong)
+  def parseNd(attr: MetaData): Try[OsmId] = Try(OsmId(attr("ref").text.toLong))
 
   def parseMember(attr: MetaData): Try[OsmMember] = {
     Try({
@@ -101,7 +102,7 @@ class OsmObjectParser(source: Source) {
         case "way" => OsmTypeWay
         case _ => OsmTypeNode
       }
-      val ref = attr("ref").text.toLong
+      val ref = OsmId(attr("ref").text.toLong)
       val role = attr("role").text match {
         case "inner" => OsmRoleInner
         case "outer" => OsmRoleOuter
@@ -120,26 +121,21 @@ class OsmObjectParser(source: Source) {
     }
   }
 
+  
   def parseProperties(attr: MetaData): Try[OsmProperties] = {
     Try({
-      val id = attr("id").text.toLong
-      val user = attr("user").text
-      val uid = attr("uid").text.toLong
-      val timestamp = convertXmlDateToLong(attr("timestamp").text)
+      val id = OsmId(attr("id").text.toLong)
+      val user = OsmUser(attr("user").text,attr("uid").text.toLong)
       val visible = attr("visible").text match {
         case "false" => false
         case _ => true
       }
-      val version = attr("version").text.toInt
-      val changeset = attr("changeset").text.toInt
-      OsmProperties(
-        id,
-        user,
-        uid,
-        timestamp,
-        visible,
-        version,
-        changeset)
+      val version = OsmVersion(
+          convertXmlDateToLong(attr("timestamp").text),
+              attr("version").text.toInt,
+              attr("changeset").text.toInt,
+              visible)
+      OsmProperties(id, user, version)
     })
   }
 
