@@ -3,6 +3,12 @@ scalaVersion := "2.11.2"
 
 scalacOptions ++= Seq("-Xmax-classfile-name", "254")
 
+
+resolvers ++= Seq(
+	Resolver.sonatypeRepo("snapshots"),
+	Resolver.sonatypeRepo("releases")
+)
+
 lazy val root = project.in( file(".") )
 	.settings(
 		organization := "org.geow",
@@ -38,7 +44,10 @@ lazy val parser = project.dependsOn(model, geohash)
 		organization := "org.geow",
 		name := """parser""",
 		scalaVersion := "2.11.2",
-		resolvers += Resolver.sonatypeRepo("snapshots"),
+		resolvers ++= Seq(
+			Resolver.sonatypeRepo("snapshots"),
+			Resolver.sonatypeRepo("releases")
+		),
     	libraryDependencies ++= Seq(
 			 "org.scala-lang" % "scala-xml" % "2.11.0-M4",
 			"joda-time" % "joda-time" % "2.3",
@@ -54,11 +63,6 @@ lazy val tests = project
 
 lazy val util = project
 	
-
-resolvers ++= Seq(
-	Resolver.sonatypeRepo("snapshots")
-)
-
 
 
 

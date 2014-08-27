@@ -26,14 +26,14 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
   val xml =
     <osm version="0.6" generator="CGImap 0.3.3 (4443 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
       <node id="2465725143" visible="true" version="2" changeset="21736329" timestamp="2014-04-16T19:23:01Z" user="black_bike" uid="18130" lat="51.2378913" lon="6.7797524">
-        <tag k="addr:city" v="Düsseldorf"/>
+        <tag k="addr:city" v="DÃ¼sseldorf"/>
         <tag k="addr:country" v="DE"/>
         <tag k="addr:housenumber" v="53"/>
         <tag k="addr:postcode" v="40477"/>
-        <tag k="addr:street" v="Nordstraße"/>
+        <tag k="addr:street" v="NordstraÃŸe"/>
         <tag k="amenity" v="restaurant"/>
         <tag k="cuisine" v="regional"/>
-        <tag k="name" v="Himmel und Ähd"/>
+        <tag k="name" v="Himmel und Ã„hd"/>
         <tag k="phone" v="+49 211 4981361"/>
         <tag k="website" v="http://www.himmel-aehd.de"/>
       </node>
@@ -72,23 +72,24 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
         <tag k="boundary" v="administrative"/>
         <tag k="name" v="Golzheim"/>
         <tag k="type" v="boundary"/>
-        <tag k="wikipedia" v="de:Golzheim_(Düsseldorf)"/>
+        <tag k="wikipedia" v="de:Golzheim_(DÃ¼sseldorf)"/>
       </relation>
     </osm>
 
-  val nodeProps = OsmProperties(2465725143L, "black_bike", 18130L,
-    convertXmlDateToLong("2014-04-16T19:23:01Z"), true, 2,
-    21736329)
+  val nodeProps = OsmProperties(
+    OsmId(2465725143L),
+    OsmUser("black_bike", 18130L),
+    OsmVersion(convertXmlDateToLong("2014-04-16T19:23:01Z"), 2, 21736329, true))
 
   val nodeTags = List(
-    OsmTag("addr:city", "Düsseldorf"),
+    OsmTag("addr:city", "DÃ¼sseldorf"),
     OsmTag("addr:country", "DE"),
     OsmTag("addr:housenumber", "53"),
     OsmTag("addr:postcode", "40477"),
-    OsmTag("addr:street", "Nordstraße"),
+    OsmTag("addr:street", "NordstraÃŸe"),
     OsmTag("amenity", "restaurant"),
     OsmTag("cuisine", "regional"),
-    OsmTag("name", "Himmel und Ähd"),
+    OsmTag("name", "Himmel und Ã„hd"),
     OsmTag("phone", "+49 211 4981361"),
     OsmTag("website", "http://www.himmel-aehd.de"))
 
@@ -96,8 +97,10 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   val node = OsmNode(nodeProps, nodeTags, nodePoint)
 
-  val wayProps = OsmProperties(143653722L, "teufli", 247886L, convertXmlDateToLong("2014-01-14T00:57:49Z"), true, 5,
-    19982704)
+  val wayProps = OsmProperties(
+    OsmId(143653722L),
+    OsmUser("teufli", 247886L),
+    OsmVersion(convertXmlDateToLong("2014-01-14T00:57:49Z"), 5, 19982704, true))
 
   val wayTags = List(
     OsmTag("highway", "trunk"),
@@ -111,30 +114,41 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
     OsmTag("name", "Rheinalleetunnel"),
     OsmTag("oneway", "yes"))
 
-  val wayNds = List(203790573L, 717638289L, 73664701L, 827539061L, 717638282L, 827538924L, 73664703L, 717638284L, 717638278L)
+  val wayNds = List(
+    OsmId(203790573L),
+    OsmId(717638289L),
+    OsmId(73664701L),
+    OsmId(827539061L),
+    OsmId(717638282L),
+    OsmId(827538924L),
+    OsmId(73664703L),
+    OsmId(717638284L),
+    OsmId(717638278L))
 
   val way = OsmWay(wayProps, wayTags, wayNds)
 
-  val relationProps = OsmProperties(91062L, "Gehrke", 14002L, convertXmlDateToLong("2013-11-08T12:20:08Z"), true, 11,
-    18781052)
+  val relationProps = OsmProperties(
+    OsmId(91062L),
+    OsmUser("Gehrke", 14002L),
+    OsmVersion(convertXmlDateToLong("2013-11-08T12:20:08Z"), 11, 18781052, true))
 
   val relationTags = List(
     OsmTag("admin_level", "10"),
     OsmTag("boundary", "administrative"),
     OsmTag("name", "Golzheim"),
     OsmTag("type", "boundary"),
-    OsmTag("wikipedia", "de:Golzheim_(Düsseldorf)"))
+    OsmTag("wikipedia", "de:Golzheim_(DÃ¼sseldorf)"))
 
   val relationMembers = List(
-    OsmMember(OsmTypeWay, 245181859L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 245181864L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011174L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011181L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011176L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 31916345L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011190L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011189L, OsmRoleOuter),
-    OsmMember(OsmTypeWay, 32011184L, OsmRoleOuter))
+    OsmMember(OsmTypeWay, OsmId(245181859L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(245181864L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011174L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011181L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011176L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(31916345L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011190L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011189L), OsmRoleOuter),
+    OsmMember(OsmTypeWay, OsmId(32011184L), OsmRoleOuter))
 
   val relation = OsmRelation(relationProps, relationTags, relationMembers)
 

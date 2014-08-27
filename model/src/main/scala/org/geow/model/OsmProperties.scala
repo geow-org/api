@@ -1,11 +1,9 @@
 package org.geow.model
 
+import org.geow.model._
+
 case class OsmProperties(
-	osmId : Long,
-	user : String,
-	uid : Long,
-	timestamp : Long,
-	visible : Boolean,
-	version : Int,
-	changeset : Int
+	osmId : OsmId,
+	user : OsmUser,
+	version : OsmVersion
 )
