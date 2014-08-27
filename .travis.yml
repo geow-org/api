@@ -4,7 +4,6 @@ script:
 scala:
    - 2.11.2
 jdk:
-  - openjdk7
   - oraclejdk7
   - oraclejdk8
 notifications:
