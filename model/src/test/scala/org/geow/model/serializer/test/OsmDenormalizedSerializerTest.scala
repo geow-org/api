@@ -17,7 +17,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.geow.model._
 import org.geow.model.geometry._
 import org.geow.model.serializer.OsmDenormalizedSerializer._
-import org.geow.model.test.OsmObjectGenerator
+import org.geow.model.generator.OsmObjectGenerator
 
 @RunWith(classOf[JUnitRunner])
 class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
