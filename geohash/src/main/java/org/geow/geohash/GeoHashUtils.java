@@ -63,7 +63,7 @@ public class GeoHashUtils {
 	/**
 	 * Creates a KeyGenerator with the specified precision.
 	 * 
-	 * @param precision
+	 * @param precision Desired precision for the hash generator
 	 */
 	public GeoHashUtils(PRECISION precision) {
 		this.precisionBits = getNumberOfBits(precision);
@@ -78,8 +78,8 @@ public class GeoHashUtils {
 	
 	/**
 	 * Gets the number of bits for the desired precision. 
-	 * @param precision
-	 * @return
+	 * @param precision  The precision
+	 * @return The number of bits
 	 */
 	public int getNumberOfBits(PRECISION precision) {
 		int myPrecision = 0;
@@ -105,8 +105,10 @@ public class GeoHashUtils {
 	}
 
 	/**
-	 * Calculates the maximum number of nodes that fit into a hash with the
+	 * Calculates the maximum number of points that fit into a hash with the
 	 * given precision.
+	 * @param workingPrecision Number of bits
+	 * @return Number of elements
 	 */
 	public long calculateMaxNumber(int workingPrecision) {
 		int myPrecision = workingPrecision;
@@ -130,9 +132,9 @@ public class GeoHashUtils {
 	}
 
 	/**
-	 * Returns the maximum number of nodes for a certain hash.
+	 * Returns the maximum number of points for a certain hash.
 	 * 
-	 * @return
+	 * @return The maximum number
 	 */
 	public Long getMaxNumber() {
 		return maxNumber;
@@ -506,7 +508,7 @@ public class GeoHashUtils {
 	 *            The current node counter.
 	 * @return The calculated node id.
 	 * @throws IndexOutOfBoundsException
-	 *             Throws an IndexOutOfBoundsException if the id is out of bounds (>maxNumber).
+	 *             Throws an IndexOutOfBoundsException if the id is out of bounds (greater than maxNumber).
 	 */
 	public Long getGeoID(Long hash, Long id) throws IndexOutOfBoundsException {
 
@@ -544,8 +546,8 @@ public class GeoHashUtils {
 	/**
 	 * Returns the sequential or parallel hash for a given geoId.
 	 * 
-	 * @param geoId
-	 * @return The plain hash.
+	 * @param geoId The hash containing an id
+	 * @return The hash part without the id part
 	 */
 	public Long getHash(Long geoId) {
 		Long inverted = ~maxNumber;
@@ -558,10 +560,10 @@ public class GeoHashUtils {
 	 * dimension identifies the longitude values { longitude -1, longitude,
 	 * longitude +1} and the second dimension identifies the latitude values{
 	 * latitude +1, latitude, latitude -1 }. To put it in other words: From
-	 * Top-Left rightwards & downwards to Bottom-Right.
+	 * Top-Left rightwards &amp; downwards to Bottom-Right.
 	 * 
-	 * @param hash
-	 * @return
+	 * @param hash The center hash
+	 * @return Two-dimensional array containing the hashes
 	 */
 	public Long[][] getNeighbourHashes(Long hash) {
 		Long[][] neighbourHashes = new Long[3][3];
@@ -586,6 +588,11 @@ public class GeoHashUtils {
 		return neighbourHashes;
 	}
 	
+	/**
+	 * Gets the bounding box specified by lon lat diff. 
+	 * @param parallelHash A parallel hash
+	 * @return Two-dimensional array specifying lon and lat diff
+	 */
 	public Double[] getBoundingBox(Long parallelHash){
 		Long boundingBox = parallelHash;
 		double[] lonlat = decodeParallel(boundingBox);
@@ -659,6 +666,7 @@ public class GeoHashUtils {
 	 * This should typically be used on a lower precision key generator as shown below:
 	 *  
 	 * <pre>
+	 * {@code
 	 * List<Long> ultraPrecisionPointList = new ArrayList<Long>();
 	 * // Fill with points.
 	 * 
@@ -675,7 +683,8 @@ public class GeoHashUtils {
 	 * 
 	 * // Get the bounding boxes. 
 	 * long[][] encapsulatingBoundingBoxes = keyGenLow.getEncapsulatingRectangleBoundingBoxes(lowPrecisionRectangle);
-	 * // Do whatever you have to do with the bounding boxes. May the force be with you! 
+	 * // Do whatever you have to do with the bounding boxes. May the force be with you!
+	 * }
 	 * </pre>
 	 *  
 	 *  

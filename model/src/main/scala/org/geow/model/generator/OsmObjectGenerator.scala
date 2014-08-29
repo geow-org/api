@@ -1,11 +1,11 @@
-package org.geow.model.test
+package org.geow.model.generator
 
 import org.geow.model._
 import scala.util.Random
 import org.geow.model.geometry._
 import org.geow.model._
-import org.scalacheck.{ Arbitrary, Gen }
-import Gen._
+import org.scalacheck.Gen
+import org.scalacheck.Gen._
 
 case class OsmObjectGenerator() {
   
