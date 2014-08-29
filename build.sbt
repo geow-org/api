@@ -33,7 +33,7 @@ lazy val model = project
 		resolvers += Resolver.sonatypeRepo("snapshots"),
     	libraryDependencies ++= Seq(
 			"org.scala-lang" %% "scala-pickling" % "0.9.0-SNAPSHOT",
-  			"org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
+  			"org.scalacheck" %% "scalacheck" % "1.11.4",
     		"org.specs2" %% "specs2" % "2.3.12" % "test",
     		"junit" % "junit" % "4.11" % "test"
 		)
