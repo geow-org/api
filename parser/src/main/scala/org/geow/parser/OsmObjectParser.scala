@@ -1,4 +1,4 @@
-package org.geow.osm.parser
+package org.geow.parser
 
 import scala.xml._
 import scala.xml.pull._
@@ -15,7 +15,7 @@ import org.geow.model.geometry.OsmPoint
 
 class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
 
-  import org.geow.osm.parser.OsmObjectParser._
+  import org.geow.parser.OsmObjectParser._
 
   val reader = new XMLEventReader(source)
 

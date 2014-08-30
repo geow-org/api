@@ -1,36 +1,34 @@
 
-scalaVersion := "2.11.2"
-
-scalacOptions ++= Seq("-Xmax-classfile-name", "254")
-
-
-resolvers ++= Seq(
-	Resolver.sonatypeRepo("snapshots"),
-	Resolver.sonatypeRepo("releases")
-)
 
 lazy val root = project.in( file(".") )
-	.settings(
-		organization := "org.geow",
-		scalaVersion := "2.11.2"
-	)
-	.aggregate(geohash, model, parser, testkit, tests, util)
+	.aggregate(geohash, model, parser)
 
 lazy val geohash = project
 	.settings(
+		scalaVersion := "2.11.2",
+		scalacOptions ++= Seq("-Xmax-classfile-name", "254","-deprecation"),
+		resolvers ++= Seq(
+			Resolver.sonatypeRepo("snapshots"),
+			Resolver.sonatypeRepo("releases")
+		),
 		organization := "org.geow",
 		name := """geohash""",
-		scalaVersion := "2.11.2"
+		version := "0.1-SNAPSHOT",
+		parallelExecution := false
 	)
 
 lazy val model = project
 	.settings(
+		scalaVersion := "2.11.2",
+		scalacOptions ++= Seq("-Xmax-classfile-name", "254","-deprecation"),
+		resolvers ++= Seq(
+			Resolver.sonatypeRepo("snapshots"),
+			Resolver.sonatypeRepo("releases")
+		),
 		organization := "org.geow",
 		name := """model""",
-		scalaVersion := "2.11.2",
-		scalacOptions ++= Seq("-deprecation"),
+		version := "0.1-SNAPSHOT",
 		parallelExecution := false,
-		resolvers += Resolver.sonatypeRepo("snapshots"),
     	libraryDependencies ++= Seq(
 			"org.scala-lang" %% "scala-pickling" % "0.9.0-SNAPSHOT",
   			"org.scalacheck" %% "scalacheck" % "1.11.4",
@@ -41,13 +39,15 @@ lazy val model = project
 
 lazy val parser = project.dependsOn(model, geohash)
 	.settings(
-		organization := "org.geow",
-		name := """parser""",
 		scalaVersion := "2.11.2",
+		scalacOptions ++= Seq("-Xmax-classfile-name", "254","-deprecation"),
 		resolvers ++= Seq(
 			Resolver.sonatypeRepo("snapshots"),
 			Resolver.sonatypeRepo("releases")
 		),
+		organization := "org.geow",
+		name := """parser""",
+		version := "0.1-SNAPSHOT",
     	libraryDependencies ++= Seq(
 			 "org.scala-lang" % "scala-xml" % "2.11.0-M4",
 			"joda-time" % "joda-time" % "2.3",
@@ -57,11 +57,6 @@ lazy val parser = project.dependsOn(model, geohash)
 		)
 	)
 
-lazy val testkit = project
-
-lazy val tests = project
-
-lazy val util = project
 	
 
 
