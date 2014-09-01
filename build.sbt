@@ -49,7 +49,8 @@ lazy val parser = project.dependsOn(model, geohash)
 		name := """parser""",
 		version := "0.1-SNAPSHOT",
     	libraryDependencies ++= Seq(
-			 "org.scala-lang" % "scala-xml" % "2.11.0-M4",
+			"org.apache.commons" % "commons-compress" % "1.8.1",
+			"org.scala-lang" % "scala-xml" % "2.11.0-M4",
 			"joda-time" % "joda-time" % "2.3",
   			"org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
     		"org.specs2" %% "specs2" % "2.3.12" % "test",

@@ -1,22 +1,25 @@
-package org.geow.parser
+package org.geow.parser.impl
 
 import scala.xml._
 import scala.xml.pull._
 import scala.io.Source
 import org.geow.model._
-import org.joda.time.DateTimeZone
 import org.joda.time.format.ISODateTimeFormat
 import scala.util.Try
 import scala.collection.mutable.ListBuffer
 import scala.util.Success
 import scala.util.Failure
 import org.geow.model.geometry.OsmPoint
-import org.geow.model.geometry.OsmPoint
+import scala.io.Codec
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
+import java.io.FileInputStream
+import scala.xml.NodeSeq.seqToNodeSeq
+import org.geow.parser.OsmParser
 
-class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
+class OsmXmlParser(source: Source) extends OsmParser {
 
-  import org.geow.parser.OsmObjectParser._
-
+  import OsmXmlParser._
+  
   val reader = new XMLEventReader(source)
 
   override def hasNext() = reader.hasNext
@@ -67,8 +70,8 @@ class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
         case elem @ EvElemStart(_, "tag", attr, _) => {
           parseTag(attr).map(tag => tagList += tag)
         }
-        case EvElemStart(_, elem, _, _) => 
-        case EvText(text) => 
+        case EvElemStart(_, elem, _, _) =>
+        case EvText(text) =>
         case EvElemEnd(_, "node") => {
           pointOption.map(point => {
             propertiesOption.map(properties => {
@@ -86,7 +89,7 @@ class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
             result = Some(OsmRelation(properties, tagList.toList, memberList.toList))
           })
         }
-        case EvElemEnd(_, _) => 
+        case EvElemEnd(_, _) =>
         case _ =>
       }
     }
@@ -121,20 +124,22 @@ class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
     }
   }
 
-  
   def parseProperties(attr: MetaData): Try[OsmProperties] = {
     Try({
       val id = OsmId(attr("id").text.toLong)
-      val user = OsmUser(attr("user").text,attr("uid").text.toLong)
-      val visible = attr("visible").text match {
-        case "false" => false
+      val user = OsmUser(attr("user").text, attr("uid").text.toLong)
+      val visible = attr.get("visible") match {
+        case Some(visible) => visible.text match {
+          case "false" => false
+          case _ => true
+        }
         case _ => true
       }
       val version = OsmVersion(
-          convertXmlDateToLong(attr("timestamp").text),
-              attr("version").text.toInt,
-              attr("changeset").text.toInt,
-              visible)
+        convertXmlDateToLong(attr("timestamp").text),
+        attr("version").text.toInt,
+        attr("changeset").text.toInt,
+        visible)
       OsmProperties(id, user, version)
     })
   }
@@ -148,7 +153,7 @@ class OsmObjectParser(source: Source) extends Iterator[Option[OsmObject]]{
   }
 }
 
-object OsmObjectParser {
+object OsmXmlParser {
 
   val XML_DATE_INPUT_FORMAT = ISODateTimeFormat.dateTimeNoMillis()
   val XML_DATE_OUTPUT_FORMAT = ISODateTimeFormat.dateTime()
@@ -165,4 +170,5 @@ object OsmObjectParser {
     }
     millis
   }
+  
 }
