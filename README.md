@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
 # Usage
 
 ## Parsing
-Stream osm file to retrieve Osm objects. Currently, .osm files and .osm.bz2 files are supported. 
+Stream Osm files to process Osm objects. Currently files in .osm and .osm.bz2 format are supported. Pbf support is planned for the future. 
 ```scala
   
   import org.geow.parser.OsmParserFactory._
@@ -56,3 +56,11 @@ Serialize and deserialize Osm objects for network transfer.
   val serialized = toBinary(osmObject)
   val deserialized = fromBinary(serialized)
 ```
+
+# Performance
+
+See the [Benchmarks](https://github.com/geow-org/api/wiki/Benchmarks) wiki page.
+
+# Contributing
+
+If you like to contribute, please create an issue and send a pull request. For more information on pull requests see the [Github pull request tutorial](https://help.github.com/articles/using-pull-requests).
