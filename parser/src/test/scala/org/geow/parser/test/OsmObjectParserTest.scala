@@ -23,8 +23,8 @@ import org.scalacheck.Arbitrary.arbitrary
 
 import scala.io.Source
 
-import org.geow.parser.OsmObjectParser
-import org.geow.parser.OsmObjectParser._
+import org.geow.parser.impl.OsmXmlParser
+import org.geow.parser.impl.OsmXmlParser._
 import org.geow.model._
 import org.geow.model.geometry.OsmPoint
 
@@ -160,7 +160,7 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   val relation = OsmRelation(relationProps, relationTags, relationMembers)
 
-  val parser = new OsmObjectParser(Source.fromString(xml.toString))
+  val parser = new OsmXmlParser(Source.fromString(xml.toString))
 
   "The OsmObjectParser" should {
 
