@@ -33,19 +33,13 @@ libraryDependencies ++= Seq(
 # Usage
 
 ## Parsing
+Stream osm file to retrieve Osm objects. Currently, .osm files and .osm.bz2 files are supported. 
 ```scala
   
-  import org.geow.osm.parser.OsmObjectParser
+  import org.geow.parser.OsmParserFactory._
 
-  // create a source from either an osm xml  
-  val xml = ....some xml document....
-  val source = Source.fromString(xml.toString)
-  
-  // or from an osm.xml file 
-  val source = Source.fromFile(pathToFile)
-  
-  // create a parser for a Source object
-  val parser = new OsmObjectParser(source)
+  // create a parser from a file
+  val parser = createParser(fileName)
   
   // pull openstreetmap data
   for (elem <- parser) println(elem)
@@ -53,6 +47,7 @@ libraryDependencies ++= Seq(
 ```
 
 ## Serialization
+Serialize and deserialize Osm objects for network transfer. 
 ```scala
   import org.geow.model.serializer.OsmSerializer._
   
