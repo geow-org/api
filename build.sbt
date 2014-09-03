@@ -14,7 +14,13 @@ lazy val geohash = project
 		organization := "org.geow",
 		name := """geohash""",
 		version := "0.1-SNAPSHOT",
-		parallelExecution := false
+		parallelExecution := false,
+    	libraryDependencies ++= Seq(
+			"org.hamcrest" % "hamcrest-all" % "1.3" % "test",
+  			"org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
+    		"org.specs2" %% "specs2" % "2.3.12" % "test",
+    		"junit" % "junit" % "4.11" % "test"
+		)
 	)
 
 lazy val model = project

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.geow.geohash;
+package org.geow.geohash.impl;
 
 import java.util.List;
 
@@ -24,39 +24,40 @@ import java.util.List;
  * @author JansonHanson
  * 
  */
-public class GeoHashUtils {
+public class GeoHashImpl {
 
 
 	private static final int MAX_BITS = 64;
-	private int precisionBits;
-	
-	/*
-	 * Number of bits used for each precision. Note that the maximum is 32, since it applies twice: lon and lat
-	 */
-	private static final int ULTRA_LOW_PRECISION = 5;
-	private static final int VERY_LOW_PRECISION = 8;
-	private static final int LOW_PRECISION = 10;
-	private static final int MEDIUM_PRECISION = 13;
-	private static final int HIGH_PRECISION = 18;
-	private static final int VERY_HIGH_PRECISION = 24;
-	private static final int ULTRA_PRECISION = 30;
-	
+
 	private Long maxNumber = 0L;
 
+	private PRECISION precision;
+
 	public static enum PRECISION {
-		ULTRA_LOW_630KM,
-		VERY_LOW_80KM,
-		LOW_20KM,
-		MEDIUM_5KM,
-		HIGH_100M,
-		VERY_HIGH_1M,
-		ULTRA_1CM
+		ULTRA_LOW_630KM(5),
+		VERY_LOW_80KM(8),
+		LOW_20KM(10),
+		MEDIUM_5KM(13),
+		HIGH_100M(18),
+		VERY_HIGH_1M(24),
+		ULTRA_1CM(30),
+		ULTRA_HIGH_1MM(32);
+		
+		private final int numberOfBits;
+		
+		PRECISION(int numberOfBits){
+			this.numberOfBits = numberOfBits;
+		}
+		
+		public int numberOfBits() {
+			return numberOfBits;
+		}
 	}
 	
 	/**
 	 * Creates a KeyGenerator with default precision.
 	 */
-	public GeoHashUtils() {
+	public GeoHashImpl() {
 		this(PRECISION.MEDIUM_5KM);
 	}
 
@@ -65,43 +66,14 @@ public class GeoHashUtils {
 	 * 
 	 * @param precision Desired precision for the hash generator
 	 */
-	public GeoHashUtils(PRECISION precision) {
-		this.precisionBits = getNumberOfBits(precision);
-			
-		maxNumber = calculateMaxNumber(this.precisionBits);
+	public GeoHashImpl(PRECISION precision) {
+		this.precision = precision;
+		this.maxNumber = calculateMaxNumber(precision.numberOfBits());
 
 	}
 
-	public int getNumberOfBits(){
-		return this.precisionBits;
-	}
-	
-	/**
-	 * Gets the number of bits for the desired precision. 
-	 * @param precision  The precision
-	 * @return The number of bits
-	 */
-	public int getNumberOfBits(PRECISION precision) {
-		int myPrecision = 0;
-		switch(precision){
-		case ULTRA_LOW_630KM:
-			myPrecision = ULTRA_LOW_PRECISION;break;
-		case VERY_LOW_80KM:
-			myPrecision = VERY_LOW_PRECISION;break;
-		case LOW_20KM: 
-			myPrecision = LOW_PRECISION;break;
-		case HIGH_100M:
-			myPrecision = HIGH_PRECISION;break;
-		case VERY_HIGH_1M:
-			myPrecision = VERY_HIGH_PRECISION;break;
-		case ULTRA_1CM:
-			myPrecision = ULTRA_PRECISION;break;
-		case MEDIUM_5KM:
-		default:
-			myPrecision = MEDIUM_PRECISION;break;
-			
-		}
-		return myPrecision;
+	public PRECISION precision() {
+		return precision;
 	}
 
 	/**
@@ -136,7 +108,7 @@ public class GeoHashUtils {
 	 * 
 	 * @return The maximum number
 	 */
-	public Long getMaxNumber() {
+	public Long maxNumber() {
 		return maxNumber;
 	}
 
@@ -153,6 +125,7 @@ public class GeoHashUtils {
 	public long encodeSequential(final double longitude, final double latitude) {
 
 		long hash = 0;
+		int precisionBits = this.precision.numberOfBits();
 
 		double[] longitudeInterval = { -180.0, 180.0 };
 		double[] latitudeInterval = { -90.0, 90.0 };
@@ -220,6 +193,7 @@ public class GeoHashUtils {
 	public long encodeParallel(final double longitude, final double latitude) {
 		
 		long hash = 0;
+		int precisionBits = this.precision.numberOfBits();
 
 		double[] longitudeInterval = { -180.0, 180.0 };
 		double[] latitudeInterval = { -90.0, 90.0 };
@@ -274,6 +248,8 @@ public class GeoHashUtils {
 	 */
 	public double[] decodeSequential(long hash) {
 
+		int precisionBits = this.precision.numberOfBits();
+		
 		double longitude;
 		double latitude;
 		double[] longitudeInterval = { -180.0, 180.0 };
@@ -327,6 +303,8 @@ public class GeoHashUtils {
 	 */
 	public double[] decodeParallel(long hash) {
 
+		int precisionBits = this.precision.numberOfBits();
+		
 		double longitude;
 		double latitude;
 		double[] longitudeInterval = { -180.0, 180.0 };
@@ -373,7 +351,7 @@ public class GeoHashUtils {
 	 */
 	public long reducePrecisionParallel(long hash, PRECISION precision) {
 
-		int reducedPrecisionBits = getNumberOfBits(precision);
+		int reducedPrecisionBits = precision.numberOfBits();
 		long reducedPrecisionHash = 0L;
 		
 		for (int i = MAX_BITS; i > MAX_BITS - reducedPrecisionBits * 2; i--) {
@@ -391,7 +369,7 @@ public class GeoHashUtils {
 	public double getLongitudeFailure(){
 		double longitudeInterval = 180.0;
 		double failure = longitudeInterval;
-		for(int i=0;i<precisionBits;i++){
+		for(int i=0;i<precision.numberOfBits();i++){
 			failure = failure / 2D;
 		}
 		return failure;		
@@ -400,7 +378,7 @@ public class GeoHashUtils {
 	public double getLatitudeFailure(){
 		double latitudeInterval = 90.0;
 		double failure = latitudeInterval;
-		for(int i=0;i<precisionBits;i++){
+		for(int i=0;i<precision.numberOfBits();i++){
 			failure = failure / 2D;
 		}
 		return failure;		
@@ -417,6 +395,8 @@ public class GeoHashUtils {
 	 *         long[1] contains the latitude hash.
 	 */
 	public long[] splitHash(long hash) {
+
+		int precisionBits = this.precision.numberOfBits();
 
 		long longitudeHash = 0;
 		long latitudeHash = 0;
@@ -460,6 +440,8 @@ public class GeoHashUtils {
 	 * @return The joined parrallel hash.
 	 */
 	public long joinHash(long longitudeHash, long latitudeHash) {
+
+		int precisionBits = this.precision.numberOfBits();
 
 		long joinedHash = 0L;
 
@@ -517,7 +499,7 @@ public class GeoHashUtils {
 		if (id > maxNumber) {
 
 			throw new IndexOutOfBoundsException("Id " + id
-					+ " out of bounds for precision " + precisionBits
+					+ " out of bounds for precision " + precision.numberOfBits()
 					+ " (maxNumber=" + maxNumber + ").");
 		}
 		geoID |= hash;
