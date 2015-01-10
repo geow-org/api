@@ -4,11 +4,9 @@ import org.geow.model._
 import scala.util.Random
 import org.geow.model.geometry._
 import org.geow.model._
-import org.scalacheck.Gen
-import org.scalacheck.Gen._
 
 case class OsmObjectGenerator() {
-  
+
   val random = new Random()
 
   def generateOsmId = OsmId(random.nextLong)
@@ -16,7 +14,7 @@ case class OsmObjectGenerator() {
   def generateProperties: OsmProperties = {
     val osmId = generateOsmId
     val user = OsmUser(random.nextString(10), random.nextLong)
-    val version = OsmVersion(random.nextLong,random.nextInt,random.nextInt,random.nextBoolean)
+    val version = OsmVersion(random.nextLong, random.nextInt, random.nextInt, random.nextBoolean)
     OsmProperties(osmId, user, version)
   }
 
@@ -51,16 +49,21 @@ case class OsmObjectGenerator() {
     OsmPoint(lon, lat)
   }
 
-  def generateLinestring(n: Int = 100): OsmLinestring = {
-    OsmLinestring(Seq.fill(n)(generatePoint).toList)
+  def generateLinestring(n: Int = 100): List[OsmPoint] = {
+    Seq.fill(n)(generatePoint).toList
   }
 
   def generateOsmType: OsmType = {
-    Gen.oneOf(OsmTypeNode, OsmTypeWay).sample.get
+    oneOf(OsmTypeNode, OsmTypeWay, OsmTypeRelation)
+  }
+
+  def oneOf[T](params: T*): T = {
+    val list = Random.shuffle(params)
+    list(0)
   }
 
   def generateOsmRole: OsmRole = {
-    Gen.oneOf(OsmRoleEmpty, OsmRoleInner, OsmRoleOuter).sample.get
+    oneOf(OsmRoleEmpty, OsmRoleInner, OsmRoleOuter)
   }
 
   def generateGeometryNode: OsmGeometryNode = {
@@ -127,5 +130,5 @@ case class OsmObjectGenerator() {
     val geometryRelation = generateGeometryRelation
     OsmDenormalizedRelation(properties, tags, geometryRelation)
   }
-  
+
 }
