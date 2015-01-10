@@ -23,9 +23,7 @@ sbt publishLocal
 And then add the dependency to your build.sbt:
 ```scala
 libraryDependencies ++= Seq(
-  "org.geow" %% "geohash" % "0.1-SNAPSHOT",
-  "org.geow" %% "model" % "0.1-SNAPSHOT",
-  "org.geow" %% "parser" % "0.1-SNAPSHOT"
+  "org.geow" %% "api" % "0.1",
 )
 ```
 
