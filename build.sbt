@@ -1,20 +1,20 @@
-name := """org.geow"""
+name := """api"""
 
-organization := "api"
+organization := "org.geow"
 
-version := "0.1-SNAPSHOT"
+version := "0.1"
 
 scalaVersion := "2.11.2"
 
 resolvers ++= Seq(
-Resolver.sonatypeRepo("releases"),
-Resolver.sonatypeRepo("snapshots"),
-"Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
-"Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+	Resolver.sonatypeRepo("releases"),
+	Resolver.sonatypeRepo("snapshots"),
+	"Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+	"Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 )
 
 libraryDependencies ++= Seq(
-  "org.scala-lang" %%  "scala-pickling" % "0.9.0",
+   "org.scala-lang" %% "scala-pickling" % "0.9.1",
 	"org.apache.commons" % "commons-compress" % "1.8.1",
 	"org.scala-lang" % "scala-xml" % "2.11.0-M4",
 	"joda-time" % "joda-time" % "2.3",
