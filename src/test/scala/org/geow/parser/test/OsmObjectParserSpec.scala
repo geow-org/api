@@ -29,7 +29,7 @@ import org.geow.model._
 import org.geow.model.geometry.OsmPoint
 
 @RunWith(classOf[JUnitRunner])
-class OsmObjectParserTest extends Specification with ScalaCheck {
+class OsmObjectParserSpec extends Specification with ScalaCheck {
 
   val xml =
     <osm version="0.6" generator="CGImap 0.3.3 (4443 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
@@ -86,7 +86,7 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   val nodeProps = OsmProperties(
     OsmId(2465725143L),
-    OsmUser("black_bike", 18130L),
+    Some(OsmUser("black_bike", 18130L)),
     OsmVersion(convertXmlDateToLong("2014-04-16T19:23:01Z"), 2, 21736329, true))
 
   val nodeTags = List(
@@ -107,7 +107,7 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   val wayProps = OsmProperties(
     OsmId(143653722L),
-    OsmUser("teufli", 247886L),
+    Some(OsmUser("teufli", 247886L)),
     OsmVersion(convertXmlDateToLong("2014-01-14T00:57:49Z"), 5, 19982704, true))
 
   val wayTags = List(
@@ -137,7 +137,7 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   val relationProps = OsmProperties(
     OsmId(91062L),
-    OsmUser("Gehrke", 14002L),
+    Some(OsmUser("Gehrke", 14002L)),
     OsmVersion(convertXmlDateToLong("2013-11-08T12:20:08Z"), 11, 18781052, true))
 
   val relationTags = List(
@@ -164,7 +164,7 @@ class OsmObjectParserTest extends Specification with ScalaCheck {
 
   "The OsmObjectParser" should {
 
-    "parse an Osm xml" ! check {
+    "parse an Osm xml" in {
       parser.hasNext must be_==(true)
       parser.next must beSome(node)
       parser.hasNext must be_==(true)

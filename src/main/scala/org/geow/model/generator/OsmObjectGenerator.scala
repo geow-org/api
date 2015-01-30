@@ -15,7 +15,7 @@ case class OsmObjectGenerator() {
     val osmId = generateOsmId
     val user = OsmUser(random.nextString(10), random.nextLong)
     val version = OsmVersion(random.nextLong, random.nextInt, random.nextInt, random.nextBoolean)
-    OsmProperties(osmId, user, version)
+    OsmProperties(osmId, Some(user), version)
   }
 
   def generateTag: OsmTag = {
