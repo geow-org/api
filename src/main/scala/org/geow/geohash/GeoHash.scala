@@ -13,15 +13,21 @@ object PrecisionVeryHigh extends Precision(PRECISION.VERY_HIGH_1M)
 object PrecisionUltra extends Precision(PRECISION.ULTRA_1CM)
 object PrecisionUltraHigh extends Precision(PRECISION.ULTRA_HIGH_1MM)
 
-class GeoHash(val precision: Precision) {
+case class GeoHash(val precision: Precision) {
 
   val geohash = new GeoHashImpl(precision.precision)
 
   def encodeParallel(lon: Double, lat: Double): Long = geohash.encodeParallel(lon, lat)
 
-  def decodeParallel(hash: Long): Array[Double] = geohash.decodeParallel(hash)
+  def decodeParallel(hash: Long): (Double,Double) = {
+    val decoded = geohash.decodeParallel(hash)
+    (decoded(0),decoded(1))
+  }
 
-  def decodeSequential(hash: Long): Array[Double] = geohash.decodeSequential(hash)
+  def decodeSequential(hash: Long): (Double,Double) = {
+    val decoded = geohash.decodeSequential(hash)
+    (decoded(0),decoded(1))
+  }
 
   def encodeSequential(lon: Double, lat: Double): Long = geohash.encodeSequential(lon, lat)
 

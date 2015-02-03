@@ -8,10 +8,12 @@ import impl._
 
 object OsmParserFactory {
 
-  def createParser(fileName: String): OsmParser = {
+  implicit val codec = Codec.UTF8
+
+  def createParser(fileName: String)(implicit codec: Codec): OsmParser = {
     fileName match {
       case bz2 if fileName.endsWith(".bz2") => {
-        val source = Source.fromInputStream(new BZip2CompressorInputStream(new FileInputStream(fileName)))(Codec.UTF8)
+        val source = Source.fromInputStream(new BZip2CompressorInputStream(new FileInputStream(fileName)))
         new OsmXmlParser(source)
       }
       case osm if fileName.endsWith(".osm") => {
@@ -26,5 +28,7 @@ object OsmParserFactory {
       }
     }
   }
+
+  def createParser(source:Source): OsmParser = new OsmXmlParser(source)
 
 }
