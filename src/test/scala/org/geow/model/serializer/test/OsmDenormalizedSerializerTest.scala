@@ -38,7 +38,7 @@ class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
   
   "The OsmDenormalizedSerializer" should {
 
-    "serialize and deserialize an OsmDenormalizedNode object" ! check({ osmDenormalizedNode: OsmDenormalizedNode =>
+    "serialize and deserialize an OsmDenormalizedNode object" ! check(prop{ osmDenormalizedNode: OsmDenormalizedNode =>
       {
         val serialized = toBinary(osmDenormalizedNode)
         val deserialized = fromBinary(serialized)
@@ -46,7 +46,7 @@ class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
       }
     })
     
-    "serialize and deserialize an OsmDenormalizedRelation object" ! check({ osmDenormalizedRelation: OsmDenormalizedRelation =>
+    "serialize and deserialize an OsmDenormalizedRelation object" ! check(prop{ osmDenormalizedRelation: OsmDenormalizedRelation =>
       {
         val serialized = toBinary(osmDenormalizedRelation)
         val deserialized = fromBinary(serialized)
@@ -54,7 +54,7 @@ class OsmDenormalizedSerializerTest extends Specification with ScalaCheck {
       }
     })
     
-    "serialize and deserialize an OsmDenormalizedWay object" ! check({ osmDenormalizedWay:OsmDenormalizedWay =>
+    "serialize and deserialize an OsmDenormalizedWay object" ! check(prop{ osmDenormalizedWay:OsmDenormalizedWay =>
       {
         val serialized = toBinary(osmDenormalizedWay)
         val deserialized = fromBinary(serialized)
