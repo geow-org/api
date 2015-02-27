@@ -34,14 +34,14 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
   val xml =
     <osm version="0.6" generator="CGImap 0.3.3 (4443 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
       <node id="2465725143" visible="true" version="2" changeset="21736329" timestamp="2014-04-16T19:23:01Z" user="black_bike" uid="18130" lat="51.2378913" lon="6.7797524">
-        <tag k="addr:city" v="DÃ¼sseldorf"/>
+        <tag k="addr:city" v="Düsseldorf"/>
         <tag k="addr:country" v="DE"/>
         <tag k="addr:housenumber" v="53"/>
         <tag k="addr:postcode" v="40477"/>
-        <tag k="addr:street" v="NordstraÃŸe"/>
+        <tag k="addr:street" v="Nordstraße"/>
         <tag k="amenity" v="restaurant"/>
         <tag k="cuisine" v="regional"/>
-        <tag k="name" v="Himmel und Ã„hd"/>
+        <tag k="name" v="Himmel und Ähd"/>
         <tag k="phone" v="+49 211 4981361"/>
         <tag k="website" v="http://www.himmel-aehd.de"/>
       </node>

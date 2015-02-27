@@ -50,3 +50,15 @@ case class GeoHash(val precision: Precision) {
     (rectangle(0), rectangle(1))
   }
 }
+
+object GeoHash{
+
+  def ultraLow = new GeoHash(PrecisionUltraLow_630KM)
+  def veryLow = new GeoHash(PrecisionVeryLow_80KM)
+  def low = new GeoHash(PrecisionLow_20KM)
+  def medium = new GeoHash(PrecisionMedium_5KM)
+  def high = new GeoHash(PrecisionHigh_100M)
+  def veryHigh = new GeoHash(PrecisionVeryHigh_1M)
+  def ultra = new GeoHash(PrecisionUltra_1CM)
+  def ultraHigh = new GeoHash(PrecisionUltraHigh_1MM)
+}
