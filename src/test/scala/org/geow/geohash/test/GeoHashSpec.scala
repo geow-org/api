@@ -1,7 +1,7 @@
 package org.geow.geohash.test
 
 import org.geow.geohash._
-import org.geow.model.generator.OsmObjectGenerator
+import org.geow.generator.OsmObjectGenerator
 import org.specs2.ScalaCheck
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification

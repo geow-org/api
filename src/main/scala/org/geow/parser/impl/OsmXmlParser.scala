@@ -7,7 +7,7 @@ import org.geow.model._
 import org.joda.time.format.ISODateTimeFormat
 import scala.util.{Failure, Try, Success}
 import scala.collection.mutable.ListBuffer
-import org.geow.model.geometry.OsmPoint
+import org.geow.model.geometry.Point
 import scala.io.Codec
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import java.io.FileInputStream
@@ -26,38 +26,50 @@ class OsmXmlParser(source: Source) extends OsmParser {
 
     var result: Option[OsmObject] = None
 
-    var propertiesOption: Option[OsmProperties] = None
+    var idOption: Option[OsmId] = None
+    var userOption: Option[OsmUser] = None
+    var version: OsmVersion = OsmVersion()
+
     var tagList = ListBuffer[OsmTag]()
 
     var memberList = ListBuffer[OsmMember]()
 
     var ndList = ListBuffer[OsmId]()
 
-    var pointOption: Option[OsmPoint] = None
+    var pointOption: Option[Point] = None
 
     def resetElements = {
       result = None
-      propertiesOption = None
+      idOption = None
+      userOption = None
+      version = OsmVersion()
       pointOption = None
       tagList.clear
       memberList.clear
       ndList.clear
     }
 
+    def parseProperties(attr: MetaData): Unit = {
+      idOption = parseId(attr).toOption
+      version = parseVersion(attr)
+      userOption = parseUser(attr).toOption
+    }
+
     while (reader.hasNext && result == None) {
       reader.next match {
         case EvElemStart(pre, "node", attr, _) => {
           resetElements
-          propertiesOption = parseProperties(attr).toOption
+          parseProperties(attr)
+
           pointOption = parsePoint(attr).toOption
         }
         case EvElemStart(pre, "way", attr, _) => {
           resetElements
-          propertiesOption = parseProperties(attr).toOption
+          parseProperties(attr)
         }
         case EvElemStart(pre, "relation", attr, _) => {
           resetElements
-          propertiesOption = parseProperties(attr).toOption
+          parseProperties(attr)
         }
         case elem@EvElemStart(pre, "nd", attr, _) => {
           parseNd(attr).map(nd => ndList += nd)
@@ -71,20 +83,22 @@ class OsmXmlParser(source: Source) extends OsmParser {
         case EvElemStart(pre, elem, _, _) =>
         case EvText(text) =>
         case EvElemEnd(pre, "node") => {
-          (pointOption, propertiesOption) match {
-            case (Some(point), Some(properties)) => result = Some(OsmNode(properties, tagList.toList, point))
+          (idOption,userOption,version,pointOption) match {
+            case (Some(id), user, version, Some(point)) => result = Some(OsmNode(id,user,version,tagList.toList, point))
             case _ => result = None
           }
         }
         case EvElemEnd(pre, "way") => {
-          propertiesOption.map(properties => {
-            result = Some(OsmWay(properties, tagList.toList, ndList.toList))
-          })
+          (idOption,userOption,version, ndList.toList) match {
+            case (Some(id), user, version, first :: second :: rest) => result = Some(OsmWay(id,user,version,tagList.toList,ndList.toList))
+            case _ => result = None
+          }
         }
         case EvElemEnd(pre, "relation") => {
-          propertiesOption.map(properties => {
-            result = Some(OsmRelation(properties, tagList.toList, memberList.toList))
-          })
+          (idOption,userOption,version, memberList.toList) match {
+            case (Some(id), user, version, first :: rest) => result = Some(OsmRelation(id,user,version,tagList.toList,memberList.toList))
+            case _ => result = None
+          }
         }
         case EvElemEnd(pre, elem) =>
         case _ =>
@@ -130,59 +144,56 @@ object OsmXmlParser {
     }
   }
 
-  def parseProperties(attr: MetaData): Try[OsmProperties] = {
+  def parseVersion(attr: MetaData): OsmVersion = {
 
-    val idOptStr = attr.get("id")
-    val idTry = idOptStr match {
-      case None => Failure(new Error("Element does not have an id"))
-      case Some(seq: Seq[Node]) => Try(seq.text.toLong)
-    }
-
-    idTry match {
-      case Success(id) => {
-        val osmId = OsmId(id)
-        val osmUser = Try(OsmUser(attr("user").text, attr("uid").text.toLong)).toOption
-
-        val visibleOptStr = attr.get("visible")
-        val visible: Boolean = visibleOptStr match {
-          case None => true
-          case Some(seq: Seq[Node]) => seq.text match {
-            case "false" => false
-            case _ => true
-          }
-        }
-
-        val timestampOptStr = attr.get("timestamp")
-        val timestamp: Long = timestampOptStr match {
-          case None => System.currentTimeMillis()
-          case Some(seq: Seq[Node]) => convertXmlDateToLong(seq.text)
-        }
-
-        val versionOptStr = attr.get("version")
-        val version: Int = versionOptStr match {
-          case None => 1
-          case Some(seq: Seq[Node]) => Try(seq.toString.toInt).getOrElse(1)
-        }
-
-        val changesetOptStr = attr.get("changeset")
-        val changeset: Int = changesetOptStr match {
-          case None => 1
-          case Some(seq: Seq[Node]) => Try(seq.toString.toInt).getOrElse(1)
-        }
-
-        val osmVersion = OsmVersion(timestamp, version, changeset, visible)
-        Success(OsmProperties(osmId, osmUser, osmVersion))
+    val visibleOptStr = attr.get("visible")
+    val visible: Boolean = visibleOptStr match {
+      case None => true
+      case Some(seq: Seq[Node]) => seq.text match {
+        case "false" => false
+        case _ => true
       }
-      case Failure(e) => Failure(e)
-
     }
+
+    val timestampOptStr = attr.get("timestamp")
+    val timestamp: Long = timestampOptStr match {
+      case None => System.currentTimeMillis()
+      case Some(seq: Seq[Node]) => convertXmlDateToLong(seq.text)
+    }
+
+    val versionOptStr = attr.get("version")
+    val version: Int = versionOptStr match {
+      case None => 1
+      case Some(seq: Seq[Node]) => Try(seq.toString.toInt).getOrElse(1)
+    }
+
+    val changesetOptStr = attr.get("changeset")
+    val changeset: Int = changesetOptStr match {
+      case None => 1
+      case Some(seq: Seq[Node]) => Try(seq.toString.toInt).getOrElse(1)
+    }
+
+    OsmVersion(timestamp, version, changeset, visible)
   }
 
-  def parsePoint(attr: MetaData): Try[OsmPoint] = {
+  def parseUser(attr: MetaData): Try[OsmUser] = {
+    Try(OsmUser(attr("user").text, attr("uid").text.toLong))
+  }
+
+  def parseId(attr: MetaData): Try[OsmId] = {
+    val idOptStr = attr.get("id")
+    val idTry = idOptStr match {
+      case None => Failure(new scala.Error("Element does not have an id"))
+      case Some(seq: Seq[Node]) => Try(OsmId(seq.text.toLong))
+    }
+    idTry
+  }
+
+  def parsePoint(attr: MetaData): Try[Point] = {
     Try({
       val lat = attr("lat").text.toDouble
       val lon = attr("lon").text.toDouble
-      OsmPoint(lon, lat)
+      Point(lon, lat)
     })
   }
 

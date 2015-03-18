@@ -1,4 +1,4 @@
-package org.geow.model.serializer
+package org.geow.serializer
 
 import org.geow.model._
 import org.geow.model.geometry._

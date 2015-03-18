@@ -1,4 +1,4 @@
-package org.geow.model.serializer.test
+package org.geow.serializer.test
 
 import org.specs2.mutable.Specification
 import org.scalacheck.{ Arbitrary, Gen }
@@ -16,8 +16,8 @@ import Prop.forAll
 import org.scalacheck.Arbitrary.arbitrary
 import org.geow.model._
 import org.geow.model.geometry._
-import org.geow.model.serializer.OsmSerializer._
-import org.geow.model.generator.OsmObjectGenerator
+import org.geow.serializer.OsmSerializer._
+import org.geow.generator.OsmObjectGenerator
 
 @RunWith(classOf[JUnitRunner])
 class OsmSerializerTest extends Specification with ScalaCheck{
