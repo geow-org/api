@@ -1,7 +1,7 @@
 package org.geow.util
 
 import org.geow.model._
-import org.geow.model.geometry.{GeometryMember, GeometryCollection, Linestring, Point}
+import org.geow.model.geometry._
 
 /**
  * Utility class to denormalize osm elements.
@@ -23,7 +23,7 @@ object Denormalizer {
     OsmDenormalizedWay(way.id,way.user,way.version, way.tags, geometry)
   }
 
-  def denormalizeRelation(relation: OsmRelation, mappings: Map[(OsmId,OsmType), GeometryCollection]) = {
+  def denormalizeRelation(relation: OsmRelation, mappings: Map[(OsmId,OsmType), Geometry]) = {
     val members = for {
       member: OsmMember <- relation.refs
       tuple = member.ref -> member.typ

@@ -1,8 +1,8 @@
 package org.geow.model
 
 import org.geow.model.geometry._
-import play.api.libs.json.{Json, JsValue, JsString, JsObject}
-import play.extras.geojson.{Feature => JsonFeature, Geometry => JsonGeometry, GeometryCollection => JsonGeometryCollection, LatLng => JsonLatLng, Point => JsonPoint, LineString => JsonLineString}
+import play.api.libs.json.{JsObject, JsString, Json}
+import play.extras.geojson.{Feature => JsonFeature, FeatureCollection => JsonFeatureCollection, Geometry => JsonGeometry, GeometryCollection => JsonGeometryCollection, LatLng => JsonLatLng, LineString => JsonLineString, Point => JsonPoint}
 
 sealed trait OsmDenormalizedObject{
 
@@ -18,6 +18,7 @@ sealed trait OsmDenormalizedObject{
 
   def toGeoJson(withTags:Boolean):String
 
+  private[model] def toGeoJsonImpl(withTags:Boolean):JsonFeature[JsonLatLng]
 
   protected def props(withTags: Boolean): Option[JsObject] = {
     val properties = if (withTags) {
@@ -31,42 +32,67 @@ sealed trait OsmDenormalizedObject{
 
 }
 
+object OsmDenormalizedObject{
+
+  def toGeoJson(osmObjects: List[OsmDenormalizedObject]):String = {
+
+    val feature = JsonFeatureCollection(osmObjects.map(obj => obj.toGeoJsonImpl(true)))
+    Json.toJson(feature).toString()
+
+  }
+
+}
+
 case class OsmDenormalizedNode(id: OsmId, user: Option[OsmUser] = None, version:OsmVersion = OsmVersion(), tags : List[OsmTag], geometry : Point) extends OsmDenormalizedObject{
+
   type T = Point
 
   override def toString = toGeoJson()
 
-  def toGeoJson(withTags : Boolean = true):String = {
-    val point = geometry.toGeoJson
+  override def toGeoJson(withTags : Boolean = true):String = {
+    Json.toJson(toGeoJsonImpl(withTags)).toString
+  }
+
+  override def toGeoJsonImpl(withTags:Boolean):JsonFeature[JsonLatLng] = {
+    val point = geometry.toGeoJsonImpl
     val properties: Option[JsObject] = props(withTags)
 
-    val feature = JsonFeature(point,
+    JsonFeature(point,
       properties = properties)
-    Json.toJson(feature).toString
   }
 
 }
 case class OsmDenormalizedWay(id: OsmId, user: Option[OsmUser] = None, version:OsmVersion = OsmVersion(), tags : List[OsmTag], geometry : Linestring) extends OsmDenormalizedObject{
+
   type T = Linestring
 
-  def toGeoJson(withTags : Boolean = true):String = {
-    val line = geometry.toGeoJson
+  override def toString= toGeoJson()
+
+  override def toGeoJson(withTags : Boolean = true):String = {
+    Json.toJson(toGeoJsonImpl(withTags)).toString
+  }
+
+  override def toGeoJsonImpl(withTags:Boolean):JsonFeature[JsonLatLng] = {
+    val line = geometry.toGeoJsonImpl
     val properties: Option[JsObject] = props(withTags)
-    val feature = JsonFeature(line,
+    JsonFeature(line,
       properties = properties)
-    Json.toJson(feature).toString
   }
 
 }
 case class OsmDenormalizedRelation(id: OsmId, user: Option[OsmUser] = None, version:OsmVersion = OsmVersion(), tags : List[OsmTag], geometry : GeometryCollection) extends OsmDenormalizedObject{
+
   type T = GeometryCollection
 
-  def toGeoJson(withTags : Boolean = true):String = {
-    val geometryCollection = geometry.toGeoJson
-    val feature = JsonFeature(geometryCollection,
-      properties = props(withTags))
-    Json.toJson(feature).toString
+  override def toString = toGeoJson()
+
+  override def toGeoJson(withTags : Boolean = true):String = {
+    Json.toJson(toGeoJsonImpl(withTags)).toString
   }
 
-
+  override def toGeoJsonImpl(withTags: Boolean): JsonFeature[JsonLatLng] = {
+    val geometryCollection = geometry.toGeoJsonImpl
+    JsonFeature(geometryCollection,
+      properties = props(withTags))
+  }
 }

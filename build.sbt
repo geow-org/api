@@ -2,9 +2,9 @@ name := """api"""
 
 organization := "org.geow"
 
-version := "0.2"
+version := "0.2-SNAPSHOT"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),

@@ -25,22 +25,7 @@ class GeoJSONSpec extends Specification with ScalaCheck {
   val node = OsmDenormalizedNode(id, user, version, tags, nodePoint)
 
   val nodeGeoJSON =
-    """
-      |{
-      |  "type": "Feature",
-      |  "geometry": {
-      |    "type": "Point",
-      |    "coordinates": [6.7797524,51.2378913]
-      |  },
-      |  "properties": {
-      |    "addr:city": "Düsseldorf",
-      |    "addr:country": "DE",
-      |    "addr:housenumber": "1",
-      |    "addr:postcode": "40200",
-      |    "addr:street": "Heinrich-Heine Allee"
-      |  }
-      |}
-    """.stripMargin
+    """{"type":"feature","geometry":{"type":"point","coordinates":[6.779752378351986,51.237891318742186]},"properties":{"addr:city":"düsseldorf","addr:country":"de","addr:housenumber":"1","addr:postcode":"40200","addr:street":"heinrich-heineallee"}}""".stripMargin
 
 
   val lineString = List(
@@ -55,29 +40,7 @@ class GeoJSONSpec extends Specification with ScalaCheck {
   val way = OsmDenormalizedWay(id, user, version, tags, Linestring(lineString))
 
   val wayGeoJSON =
-    """
-      |{
-      |  "type": "Feature",
-      |  "geometry": {
-      |    "type": "LineString",
-      |    "coordinates": [
-      |       [6.7797524,51.2378913],
-      |       [6.7797525,51.2378914],
-      |       [6.7797526,51.2378915],
-      |       [6.7797527,51.2378916],
-      |       [6.7797528,51.2378917],
-      |       [6.7797529,51.2378918]
-      |     ]
-      |  },
-      |  "properties": {
-      |    "addr:city": "Düsseldorf",
-      |    "addr:country": "DE",
-      |    "addr:housenumber": "1",
-      |    "addr:postcode": "40200",
-      |    "addr:street": "Heinrich-Heine Allee"
-      |  }
-      |}
-    """.stripMargin
+    """|{"type":"feature","geometry":{"type":"linestring","coordinates":[[6.779752378351986,51.237891318742186],[6.779752462171018,51.23789140256122],[6.7797526298090816,51.23789148638025],[6.779752713628113,51.2378916121088],[6.779752797447145,51.23789169592783],[6.779752881266177,51.23789177974686]]},"properties":{"addr:city":"düsseldorf","addr:country":"de","addr:housenumber":"1","addr:postcode":"40200","addr:street":"heinrich-heineallee"}}""".stripMargin
 
   val relationId = OsmId(91062L)
   val relationUser = Some(OsmUser("Gehrke", 14002L))
@@ -121,39 +84,7 @@ class GeoJSONSpec extends Specification with ScalaCheck {
   ))
 
 
-  val relationGeoJSON = """{ "type": "Feature",
-                          |    "geometry":
-                          |      { "type": "geometryCollection",
-                          |        "geometries":
-                          |        [
-                          |         {
-                          |           "type": "Point",
-                          |           "coordinates": [102.0, 0.5]
-                          |         },
-                          |         {
-                          |           "type": "LineString",
-                          |           "coordinates":
-                          |           [
-                          |             [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-                          |           ]
-                          |         },
-                          |         {
-                          |           "type": "LineString",
-                          |           "coordinates":
-                          |            [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
-                          |               [100.0, 1.0], [100.0, 0.0]
-                          |            ]
-                          |         }
-                          |        ]
-                          |      }
-                          |      ,
-                          |      "properties": {
-                          |         "admin_level": "10",
-                          |         "boundary": "administrative",
-                          |         "name": "Golzheim",
-                          |         "type": "boundary"
-                          |       }
-                          |     }""".stripMargin
+  val relationGeoJSON = """{"type":"feature","geometry":{"type":"geometrycollection","geometries":[{"type":"point","coordinates":[101.99999999720603,0.49999999115243554]},{"type":"linestring","coordinates":[[101.99999999720603,-2.0954757928848267e-8],[103.00000002142042,1.000000003259629],[103.99999996181577,-2.0954757928848267e-8],[104.99999998603016,1.000000003259629]]},{"type":"linestring","coordinates":[[100.00000003259629,-2.0954757928848267e-8],[100.99999997299165,-2.0954757928848267e-8],[100.99999997299165,1.000000003259629],[100.00000003259629,1.000000003259629],[100.00000003259629,-2.0954757928848267e-8]]}]},"properties":{"admin_level":"10","boundary":"administrative","name":"golzheim","type":"boundary"}}""".stripMargin
 
   "The GeoJSON" should {
 

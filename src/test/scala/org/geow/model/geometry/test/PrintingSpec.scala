@@ -23,7 +23,7 @@ class PrintingSpec extends Specification with ScalaCheck {
     "pretty print an OsmPoint" in {
       val p = Point(34.4344583453, 43.3405834580345)
       val pretty = p.toString
-      pretty must be_==("[34.434,43.341]")
+      pretty must be_==("""{"type":"Point","coordinates":[34.434458375908434,43.34058347856626]}""")
     }
     "pretty print a list of OsmPoints" in {
       val p1 = Point(34.4344583453, 43.3405834580345)
@@ -31,7 +31,7 @@ class PrintingSpec extends Specification with ScalaCheck {
       val p3 = Point(35.5458567567, 45.34534580345)
       val w = Linestring(List(p1,p2,p3))
       val pretty = w.toString
-      pretty must be_==("[[34.434,43.341],[34.341,43.330],[35.546,45.345]]")
+      pretty must be_==("""{"type":"LineString","coordinates":[[34.434458375908434,43.34058347856626],[34.3408345291391,43.330344983842224],[35.54585674311966,45.345345789100975]]}""")
     }
   }
 

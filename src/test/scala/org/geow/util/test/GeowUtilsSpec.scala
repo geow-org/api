@@ -34,7 +34,7 @@ class GeowUtilsSpec extends Specification with ScalaCheck {
       val actualVersion = denormalizedWay.version
       val actualTags = denormalizedWay.tags
       val actualGeometry = denormalizedWay.geometry
-      val actualPoints = actualGeometry.linestring
+      val actualPoints = actualGeometry.points
 
 
       for (nd <- expectedNds){
