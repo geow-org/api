@@ -47,7 +47,7 @@ Stream Osm files to process Osm objects. Currently files in .osm and .osm.bz2 fo
 ## Serialization
 Serialize and deserialize Osm objects for network transfer. 
 ```scala
-  import org.geow.model.serializer.OsmSerializer._
+  import org.geow.serializer.OsmSerializer._
   
   ... parse or create an osm object element
   

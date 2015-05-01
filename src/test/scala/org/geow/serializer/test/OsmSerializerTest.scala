@@ -1,4 +1,4 @@
-package org.geow.model.serializer.test
+package org.geow.serializer.test
 
 import org.specs2.mutable.Specification
 import org.scalacheck.{ Arbitrary, Gen }
@@ -16,8 +16,8 @@ import Prop.forAll
 import org.scalacheck.Arbitrary.arbitrary
 import org.geow.model._
 import org.geow.model.geometry._
-import org.geow.model.serializer.OsmSerializer._
-import org.geow.model.generator.OsmObjectGenerator
+import org.geow.serializer.OsmSerializer._
+import org.geow.generator.OsmObjectGenerator
 
 @RunWith(classOf[JUnitRunner])
 class OsmSerializerTest extends Specification with ScalaCheck{
@@ -37,7 +37,7 @@ class OsmSerializerTest extends Specification with ScalaCheck{
   
   "The OsmSerializer" should {
 
-    "serialize and deserialize an OsmNode object" ! check({ osmNode: OsmNode =>
+    "serialize and deserialize an OsmNode object" ! check(prop{ osmNode: OsmNode =>
       {
         val serialized = toBinary(osmNode)
         val deserialized = fromBinary(serialized)
@@ -45,7 +45,7 @@ class OsmSerializerTest extends Specification with ScalaCheck{
       }
     })
     
-    "serialize and deserialize an OsmWay object" ! check({ osmWay: OsmWay =>
+    "serialize and deserialize an OsmWay object" ! check(prop{ osmWay: OsmWay =>
       {
         val serialized = toBinary(osmWay)
         val deserialized = fromBinary(serialized)
@@ -53,7 +53,7 @@ class OsmSerializerTest extends Specification with ScalaCheck{
       }
     })
     
-    "serialize and deserialize an OsmRelation object" ! check({ osmRelation: OsmRelation =>
+    "serialize and deserialize an OsmRelation object" ! check(prop{ osmRelation: OsmRelation =>
       {
         val serialized = toBinary(osmRelation)
         val deserialized = fromBinary(serialized)

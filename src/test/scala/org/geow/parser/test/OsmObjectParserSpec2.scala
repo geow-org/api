@@ -1,7 +1,7 @@
 package org.geow.parser.test
 
 import org.geow.model._
-import org.geow.model.geometry.OsmPoint
+import org.geow.model.geometry.Point
 import org.geow.parser.impl.OsmXmlParser
 import org.geow.parser.impl.OsmXmlParser._
 import org.junit.runner._
@@ -30,60 +30,63 @@ class OsmObjectParserSpec2 extends Specification with ScalaCheck {
     "parse the full osm properties" in {
 
       val attr = props1.attributes
-      val actualProps = parseProperties(attr)
+      val actualId = parseId(attr)
+      val actualUser = parseUser(attr)
+      val actualVersion = parseVersion(attr)
 
       val expectedTimestamp = convertXmlDateToLong("2014-04-16T19:23:01Z")
-      val expectedProps = OsmProperties(OsmId(2465725143L), Some(OsmUser("test_user", 18130L)), OsmVersion(expectedTimestamp, 2, 32423, true))
+      val expectedId = OsmId(2465725143L)
+      val expectedUser = OsmUser("test_user", 18130L)
+      val expectedVersion = OsmVersion(expectedTimestamp, 2, 32423, true)
 
-      actualProps must beSuccessfulTry(expectedProps)
+      actualId must beSuccessfulTry(expectedId)
+      actualUser must beSuccessfulTry(expectedUser)
+      actualVersion must be_==(expectedVersion)
     }
     "fail parsing properties upon missing osm id" in {
 
       val attr = props2.attributes
-      val actualProps = parseProperties(attr)
+      val actualId = parseId(attr)
 
-      val expectedTimestamp = convertXmlDateToLong("2014-04-16T19:23:01Z")
-      val expectedProps = OsmProperties(OsmId(2465725143L), Some(OsmUser("test_user", 18130L)), OsmVersion(expectedTimestamp, 2, 32423, true))
-
-      actualProps must beFailedTry
+      actualId must beFailedTry
     }
     "parse osm properties and set version to \"1\" in case of missing value" in {
 
       val attr = props4.attributes
-      val actualProps = parseProperties(attr)
+      val actualVersion = parseVersion(attr)
 
       val expectedTimestamp = convertXmlDateToLong("2014-04-16T19:23:01Z")
       val expectedProps = OsmProperties(OsmId(2465725143L), Some(OsmUser("test_user", 18130L)), OsmVersion(expectedTimestamp, 2, 32423, true))
 
-      actualProps.get.version.versionNumber must be_==(1)
+      actualVersion.versionNumber must be_==(1)
     }
     "parse osm properties and set changeset to \"1\" in case of missing value" in {
 
       val attr = props5.attributes
-      val actualProps = parseProperties(attr)
+      val actualVersion = parseVersion(attr)
 
       val expectedTimestamp = convertXmlDateToLong("2014-04-16T19:23:01Z")
       val expectedProps = OsmProperties(OsmId(2465725143L), Some(OsmUser("test_user", 18130L)), OsmVersion(expectedTimestamp, 2, 32423, true))
 
-      actualProps.get.version.changeset must be_==(1)
+      actualVersion.changeset must be_==(1)
     }
     "parse osm properties and set the timestamp to \"now\" in case of missing value" in {
 
       val expectedTimestamp = System.currentTimeMillis()
 
       val attr = props6.attributes
-      val actualProps = parseProperties(attr)
+      val actualVersion = parseVersion(attr)
 
-      actualProps.get.version.timestamp must be_>=(expectedTimestamp)
+      actualVersion.timestamp must be_>=(expectedTimestamp)
     }
     "parse osm properties and set the user to \"None\" in case of missing value" in {
 
       val expectedTimestamp = System.currentTimeMillis()
 
       val attr = props7.attributes
-      val actualProps = parseProperties(attr)
+      val actualUser = parseUser(attr)
 
-      actualProps.get.user must beNone
+      actualUser must beFailedTry
     }
   }
 

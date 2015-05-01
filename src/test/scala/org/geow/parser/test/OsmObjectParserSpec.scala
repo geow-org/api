@@ -26,7 +26,7 @@ import scala.io.Source
 import org.geow.parser.impl.OsmXmlParser
 import org.geow.parser.impl.OsmXmlParser._
 import org.geow.model._
-import org.geow.model.geometry.OsmPoint
+import org.geow.model.geometry.Point
 
 @RunWith(classOf[JUnitRunner])
 class OsmObjectParserSpec extends Specification with ScalaCheck {
@@ -34,14 +34,14 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
   val xml =
     <osm version="0.6" generator="CGImap 0.3.3 (4443 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
       <node id="2465725143" visible="true" version="2" changeset="21736329" timestamp="2014-04-16T19:23:01Z" user="black_bike" uid="18130" lat="51.2378913" lon="6.7797524">
-        <tag k="addr:city" v="DÃ¼sseldorf"/>
+        <tag k="addr:city" v="Düsseldorf"/>
         <tag k="addr:country" v="DE"/>
         <tag k="addr:housenumber" v="53"/>
         <tag k="addr:postcode" v="40477"/>
-        <tag k="addr:street" v="NordstraÃŸe"/>
+        <tag k="addr:street" v="Nordstraße"/>
         <tag k="amenity" v="restaurant"/>
         <tag k="cuisine" v="regional"/>
-        <tag k="name" v="Himmel und Ã„hd"/>
+        <tag k="name" v="Himmel und Ähd"/>
         <tag k="phone" v="+49 211 4981361"/>
         <tag k="website" v="http://www.himmel-aehd.de"/>
       </node>
@@ -84,31 +84,29 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
       </relation>
     </osm>
 
-  val nodeProps = OsmProperties(
-    OsmId(2465725143L),
-    Some(OsmUser("black_bike", 18130L)),
-    OsmVersion(convertXmlDateToLong("2014-04-16T19:23:01Z"), 2, 21736329, true))
+  val nodeId = OsmId(2465725143L)
+  val nodeUser = Some(OsmUser("black_bike", 18130L))
+  val nodeVersion = OsmVersion(convertXmlDateToLong("2014-04-16T19:23:01Z"), 2, 21736329, true)
 
   val nodeTags = List(
-    OsmTag("addr:city", "DÃ¼sseldorf"),
+    OsmTag("addr:city", "Düsseldorf"),
     OsmTag("addr:country", "DE"),
     OsmTag("addr:housenumber", "53"),
     OsmTag("addr:postcode", "40477"),
-    OsmTag("addr:street", "NordstraÃŸe"),
+    OsmTag("addr:street", "Nordstraße"),
     OsmTag("amenity", "restaurant"),
     OsmTag("cuisine", "regional"),
-    OsmTag("name", "Himmel und Ã„hd"),
+    OsmTag("name", "Himmel und Ähd"),
     OsmTag("phone", "+49 211 4981361"),
     OsmTag("website", "http://www.himmel-aehd.de"))
 
-  val nodePoint = OsmPoint(6.7797524, 51.2378913)
+  val nodePoint = Point(6.7797524, 51.2378913)
 
-  val node = OsmNode(nodeProps, nodeTags, nodePoint)
+  val node = OsmNode(nodeId,nodeUser,nodeVersion, nodeTags, nodePoint)
 
-  val wayProps = OsmProperties(
-    OsmId(143653722L),
-    Some(OsmUser("teufli", 247886L)),
-    OsmVersion(convertXmlDateToLong("2014-01-14T00:57:49Z"), 5, 19982704, true))
+  val wayId = OsmId(143653722L)
+  val wayUser = Some(OsmUser("teufli", 247886L))
+  val wayVersion = OsmVersion(convertXmlDateToLong("2014-01-14T00:57:49Z"), 5, 19982704, true)
 
   val wayTags = List(
     OsmTag("highway", "trunk"),
@@ -133,12 +131,11 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
     OsmId(717638284L),
     OsmId(717638278L))
 
-  val way = OsmWay(wayProps, wayTags, wayNds)
+  val way = OsmWay(wayId,wayUser,wayVersion, wayTags, wayNds)
 
-  val relationProps = OsmProperties(
-    OsmId(91062L),
-    Some(OsmUser("Gehrke", 14002L)),
-    OsmVersion(convertXmlDateToLong("2013-11-08T12:20:08Z"), 11, 18781052, true))
+  val relationId = OsmId(91062L)
+  val relationUser = Some(OsmUser("Gehrke", 14002L))
+  val relationVersion = OsmVersion(convertXmlDateToLong("2013-11-08T12:20:08Z"), 11, 18781052, true)
 
   val relationTags = List(
     OsmTag("admin_level", "10"),
@@ -158,7 +155,7 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
     OsmMember(OsmTypeWay, OsmId(32011189L), OsmRoleOuter),
     OsmMember(OsmTypeWay, OsmId(32011184L), OsmRoleOuter))
 
-  val relation = OsmRelation(relationProps, relationTags, relationMembers)
+  val relation = OsmRelation(relationId, relationUser, relationVersion , relationTags, relationMembers)
 
   val parser = new OsmXmlParser(Source.fromString(xml.toString))
 
