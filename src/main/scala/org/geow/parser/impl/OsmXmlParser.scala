@@ -14,7 +14,7 @@ import java.io.FileInputStream
 import scala.xml.NodeSeq.seqToNodeSeq
 import org.geow.parser.OsmParser
 
-class OsmXmlParser(source: Source) extends OsmParser {
+case class OsmXmlParser(source: Source) extends OsmParser {
 
   import OsmXmlParser._
 

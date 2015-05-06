@@ -6,8 +6,9 @@ Geow is a lightweight API for processing [OpenStreetMap](http://wiki.openstreetm
 **Features**:
 * Lightweight domain model
 * Parsing of Osm files (currently xml is supported)
-* High-performance binary serialization
+* High-performance binary serialization using scala pickling
 * Support for geometric denormalization (i.e. Osm objects contain the full geometry)
+* GeoJSON serialization
 * Efficient and flexible geo-hashing utilities
 
 **Planned:**
@@ -23,7 +24,7 @@ sbt publishLocal
 And then add the dependency to your build.sbt:
 ```scala
 libraryDependencies ++= Seq(
-  "org.geow" %% "api" % "0.1",
+  "org.geow" %% "api" % "0.2",
 )
 ```
 
@@ -34,10 +35,10 @@ libraryDependencies ++= Seq(
 Stream Osm files to process Osm objects. Currently files in .osm and .osm.bz2 format are supported. Pbf support is planned for the future. 
 ```scala
   
-  import org.geow.parser.OsmParserFactory._
+  import org.geow.parser.OsmParser
 
   // create a parser from a file
-  val parser = createParser(fileName)
+  val parser = OsmParser(fileName)
   
   // pull openstreetmap data
   for (elem <- parser) println(elem)

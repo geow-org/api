@@ -157,7 +157,7 @@ class OsmObjectParserSpec extends Specification with ScalaCheck {
 
   val relation = OsmRelation(relationId, relationUser, relationVersion , relationTags, relationMembers)
 
-  val parser = new OsmXmlParser(Source.fromString(xml.toString))
+  val parser = OsmXmlParser(Source.fromString(xml.toString))
 
   "The OsmObjectParser" should {
 
