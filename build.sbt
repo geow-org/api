@@ -2,7 +2,7 @@ name := """api"""
 
 organization := "org.geow"
 
-version := "0.2-SNAPSHOT"
+version := "0.2"
 
 scalaVersion := "2.11.6"
 

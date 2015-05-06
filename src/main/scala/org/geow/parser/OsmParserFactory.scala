@@ -2,15 +2,18 @@ package org.geow.parser
 
 import java.io.FileInputStream
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
+import org.geow.model.OsmObject
 import scala.io.Codec
 import scala.io.Source
 import impl._
 
-object OsmParserFactory {
+trait OsmParser extends Iterator[Option[OsmObject]]
+
+object OsmParser {
 
   implicit val codec = Codec.UTF8
 
-  def createParser(fileName: String)(implicit codec: Codec): OsmParser = {
+  def apply(fileName: String)(implicit codec: Codec): OsmParser = {
     fileName match {
       case bz2 if fileName.endsWith(".bz2") => {
         val source = Source.fromInputStream(new BZip2CompressorInputStream(new FileInputStream(fileName)))
@@ -29,6 +32,6 @@ object OsmParserFactory {
     }
   }
 
-  def createParser(source:Source): OsmParser = new OsmXmlParser(source)
+  def apply(source:Source): OsmParser = new OsmXmlParser(source)
 
 }

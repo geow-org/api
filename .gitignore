@@ -1,6 +1,9 @@
 *.class
 *.log
 
+*.osm
+*.osm.bz2
+
 # sbt specific
 .cache/
 .history/
